@@ -44,12 +44,16 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import com.example.android.bluetooth.ConnectionService;
+import com.example.android.bluetooth.DeviceDiscoveryService;
 import com.example.android.common.logger.Log;
+
+import java.util.Set;
 
 /**
  * This fragment controls Bluetooth to communicate with other devices.
  */
-public class BluetoothChatFragment extends Fragment {
+public class BluetoothChatFragment extends Fragment implements DeviceDiscoveryService, ConnectionService {
 
     private static final String TAG = "BluetoothChatFragment";
 
@@ -109,11 +113,13 @@ public class BluetoothChatFragment extends Fragment {
         if (mBluetoothAdapter == null) {
             return;
         }
+        //TODO - shanika
         // If BT is not on, request that it be enabled.
         // setupChat() will then be called during onActivityResult
-        if (!mBluetoothAdapter.isEnabled()) {
-            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+        if (!bluetoothIsEnable(mBluetoothAdapter)) {
+//            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+            enableBluetooth();
             // Otherwise, setup the chat session
         } else if (mChatService == null) {
             setupChat();
@@ -195,16 +201,18 @@ public class BluetoothChatFragment extends Fragment {
         mOutStringBuffer = new StringBuffer();
     }
 
+    //TODO - shanika
     /**
      * Makes this device discoverable for 300 seconds (5 minutes).
      */
     private void ensureDiscoverable() {
-        if (mBluetoothAdapter.getScanMode() !=
-                BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
-            Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-            startActivity(discoverableIntent);
-        }
+        ensureDiscoverableForATime(mBluetoothAdapter, 300);
+//        if (mBluetoothAdapter.getScanMode() !=
+//                BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
+//            Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+//            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+//            startActivity(discoverableIntent);
+//        }
     }
 
     /**
@@ -378,8 +386,11 @@ public class BluetoothChatFragment extends Fragment {
             return;
         }
         String address = extras.getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+        //TODO - shanika
         // Get the BluetoothDevice object
-        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+//        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+        BluetoothDevice device = getRemoteDevice(address);
+
         // Attempt to connect to the device
         mChatService.connect(device, secure);
     }
@@ -413,4 +424,48 @@ public class BluetoothChatFragment extends Fragment {
         return false;
     }
 
+    //TODO - shanika
+    public boolean bluetoothIsEnable(BluetoothAdapter mBluetoothAdapter){
+       return mBluetoothAdapter.isEnabled();
+    }
+
+    public void enableBluetooth(){
+        Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+    }
+
+    @Override
+    public boolean isDeviceDiscovery(BluetoothAdapter bluetoothAdapter) {
+        return false;
+    }
+
+    @Override
+    public boolean startDeviceDiscovery(BluetoothAdapter bluetoothAdapter) {
+        return false;
+    }
+
+    @Override
+    public boolean cancelDeviceDiscovery(BluetoothAdapter bluetoothAdapter) {
+        return false;
+    }
+
+    @Override
+    public Set<BluetoothDevice> getPairedDevices(BluetoothAdapter bluetoothAdapter) {
+        return null;
+    }
+
+    @Override
+    public void ensureDiscoverableForATime(BluetoothAdapter mBluetoothAdapter, int time ){
+        if (mBluetoothAdapter.getScanMode() !=
+                BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
+            Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, time);
+            startActivity(discoverableIntent);
+        }
+    }
+
+    @Override
+    public BluetoothDevice getRemoteDevice(String address){
+        return mBluetoothAdapter.getRemoteDevice(address);
+    }
 }

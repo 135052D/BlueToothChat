@@ -32,6 +32,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.android.bluetooth.DeviceDiscoveryService;
 import com.example.android.common.logger.Log;
 
 import java.util.Set;
@@ -42,7 +43,7 @@ import java.util.Set;
  * by the user, the MAC address of the device is sent back to the parent
  * Activity in the result Intent.
  */
-public class DeviceListActivity extends Activity {
+public class DeviceListActivity extends Activity implements DeviceDiscoveryService {
 
     /**
      * Tag for Log
@@ -111,8 +112,10 @@ public class DeviceListActivity extends Activity {
         // Get the local Bluetooth adapter
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 
+        //TODO - shanika
+
         // Get a set of currently paired devices
-        Set<BluetoothDevice> pairedDevices = mBtAdapter.getBondedDevices();
+        Set<BluetoothDevice> pairedDevices = getPairedDevices(mBtAdapter);
 
         // If there are paired devices, add each one to the ArrayAdapter
         if (pairedDevices.size() > 0) {
@@ -152,13 +155,22 @@ public class DeviceListActivity extends Activity {
         // Turn on sub-title for new devices
         findViewById(R.id.title_new_devices).setVisibility(View.VISIBLE);
 
+        //TODO - shanika
+//        deviceDiscovery(mBtAdapter);
+
         // If we're already discovering, stop it
-        if (mBtAdapter.isDiscovering()) {
-            mBtAdapter.cancelDiscovery();
+//        if (mBtAdapter.isDiscovering()) {
+//            mBtAdapter.cancelDiscovery();
+//        }
+//
+//        // Request discover from BluetoothAdapter
+//        mBtAdapter.startDiscovery();
+
+        if(isDeviceDiscovery(mBtAdapter)){
+            cancelDeviceDiscovery(mBtAdapter);
         }
 
-        // Request discover from BluetoothAdapter
-        mBtAdapter.startDiscovery();
+        startDeviceDiscovery(mBtAdapter);
     }
 
     /**
@@ -167,8 +179,10 @@ public class DeviceListActivity extends Activity {
     private AdapterView.OnItemClickListener mDeviceClickListener
             = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) {
+            //TODO - shanika
             // Cancel discovery because it's costly and we're about to connect
-            mBtAdapter.cancelDiscovery();
+//            mBtAdapter.cancelDiscovery();
+            cancelDeviceDiscovery(mBtAdapter);
 
             // Get the device MAC address, which is the last 17 chars in the View
             String info = ((TextView) v).getText().toString();
@@ -212,5 +226,33 @@ public class DeviceListActivity extends Activity {
             }
         }
     };
+
+    //TODO - shanika
+    @Override
+    public boolean isDeviceDiscovery(BluetoothAdapter mBtAdapter){
+        return mBtAdapter.isDiscovering();
+    }
+    @Override
+    public boolean startDeviceDiscovery(BluetoothAdapter mBtAdapter){
+        return mBtAdapter.startDiscovery();
+    }
+    @Override
+    public boolean cancelDeviceDiscovery(BluetoothAdapter mBtAdapter){
+        return mBtAdapter.cancelDiscovery();
+    }
+    @Override
+    public Set<BluetoothDevice> getPairedDevices(BluetoothAdapter bluetoothAdapter){
+        return mBtAdapter.getBondedDevices();
+    }
+
+    @Override
+    public void ensureDiscoverableForATime(BluetoothAdapter mBluetoothAdapter, int time) {
+        // abstract here
+    }
+
+    @Override
+    public BluetoothDevice getRemoteDevice(String extraDeviceAddress) {
+        return null;
+    }
 
 }
