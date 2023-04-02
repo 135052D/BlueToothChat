@@ -16,6 +16,7 @@
 
 package com.example.android.bluetoothchat;
 
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -44,6 +45,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import com.example.android.bluetooth.BluetoothConstants;
 import com.example.android.bluetooth.ConnectionService;
 import com.example.android.bluetooth.DeviceDiscoveryService;
 import com.example.android.common.logger.Log;
@@ -143,7 +145,7 @@ public class BluetoothChatFragment extends Fragment implements DeviceDiscoverySe
         // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
         if (mChatService != null) {
             // Only if the state is STATE_NONE, do we know that we haven't started already
-            if (mChatService.getState() == BluetoothChatService.STATE_NONE) {
+            if (mChatService.getState() == BluetoothConstants.STATE_NONE) {
                 // Start the Bluetooth chat services
                 mChatService.start();
             }
@@ -222,7 +224,7 @@ public class BluetoothChatFragment extends Fragment implements DeviceDiscoverySe
      */
     private void sendMessage(String message) {
         // Check that we're actually connected before trying anything
-        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
+        if (mChatService.getState() != BluetoothConstants.STATE_CONNECTED) {
             Toast.makeText(getActivity(), R.string.not_connected, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -298,15 +300,15 @@ public class BluetoothChatFragment extends Fragment implements DeviceDiscoverySe
             switch (msg.what) {
                 case Constants.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
-                        case BluetoothChatService.STATE_CONNECTED:
+                        case BluetoothConstants.STATE_CONNECTED:
                             setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
                             mConversationArrayAdapter.clear();
                             break;
-                        case BluetoothChatService.STATE_CONNECTING:
+                        case BluetoothConstants.STATE_CONNECTING:
                             setStatus(R.string.title_connecting);
                             break;
-                        case BluetoothChatService.STATE_LISTEN:
-                        case BluetoothChatService.STATE_NONE:
+                        case BluetoothConstants.STATE_LISTEN:
+                        case BluetoothConstants.STATE_NONE:
                             setStatus(R.string.title_not_connected);
                             break;
                     }
@@ -454,6 +456,7 @@ public class BluetoothChatFragment extends Fragment implements DeviceDiscoverySe
         return null;
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void ensureDiscoverableForATime(BluetoothAdapter mBluetoothAdapter, int time ){
         if (mBluetoothAdapter.getScanMode() !=

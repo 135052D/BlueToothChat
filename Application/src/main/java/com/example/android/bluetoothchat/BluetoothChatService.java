@@ -16,6 +16,15 @@
 
 package com.example.android.bluetoothchat;
 
+import static com.example.android.bluetooth.BluetoothConstants.MY_UUID_INSECURE;
+import static com.example.android.bluetooth.BluetoothConstants.MY_UUID_SECURE;
+import static com.example.android.bluetooth.BluetoothConstants.NAME_INSECURE;
+import static com.example.android.bluetooth.BluetoothConstants.NAME_SECURE;
+import static com.example.android.bluetooth.BluetoothConstants.STATE_CONNECTED;
+import static com.example.android.bluetooth.BluetoothConstants.STATE_CONNECTING;
+import static com.example.android.bluetooth.BluetoothConstants.STATE_LISTEN;
+import static com.example.android.bluetooth.BluetoothConstants.STATE_NONE;
+
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
@@ -41,17 +50,7 @@ import java.util.UUID;
 public class BluetoothChatService {
     // Debugging
     private static final String TAG = "BluetoothChatService";
-
-    // Name for the SDP record when creating server socket
-    private static final String NAME_SECURE = "BluetoothChatSecure";
-    private static final String NAME_INSECURE = "BluetoothChatInsecure";
-
-    // Unique UUID for this application
-    private static final UUID MY_UUID_SECURE =
-            UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
-    private static final UUID MY_UUID_INSECURE =
-            UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
-
+    
     // Member fields
     private final BluetoothAdapter mAdapter;
     private final Handler mHandler;
@@ -62,11 +61,6 @@ public class BluetoothChatService {
     private int mState;
     private int mNewState;
 
-    // Constants that indicate the current connection state
-    public static final int STATE_NONE = 0;       // we're doing nothing
-    public static final int STATE_LISTEN = 1;     // now listening for incoming connections
-    public static final int STATE_CONNECTING = 2; // now initiating an outgoing connection
-    public static final int STATE_CONNECTED = 3;  // now connected to a remote device
 
     /**
      * Constructor. Prepares a new BluetoothChat session.
