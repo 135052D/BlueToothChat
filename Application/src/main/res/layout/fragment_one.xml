@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FF9800"
+    android:backgroundTint="#4CAF50"
+    android:paddingTop="50dp"
+    tools:context=".fragmentOne">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFC107"
+        android:backgroundTint="#FF9800"
+        android:shadowColor="#FAF9F0"
+        android:text="Fragment One"
+        android:textSize="34sp" />
+
+</FrameLayout>

@@ -22,9 +22,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ViewAnimator;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.android.bluetooth.BluetoothConstants;
 import com.example.android.common.activities.SampleActivityBase;
 import com.example.android.common.logger.Log;
 import com.example.android.common.logger.LogFragment;
@@ -38,7 +40,7 @@ import com.example.android.common.logger.MessageOnlyLogFilter;
  * For devices with displays with a width of 720dp or greater, the sample log is always visible,
  * on other devices it's visibility is controlled by an item on the Action Bar.
  */
-public class MainActivity extends SampleActivityBase {
+public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "MainActivity";
 
@@ -53,48 +55,49 @@ public class MainActivity extends SampleActivityBase {
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             BluetoothChatFragment fragment = new BluetoothChatFragment();
-            transaction.replace(R.id.sample_content_fragment, fragment);
+            transaction.replace(R.id.fragmentContainerView7 , BluetoothChatFragment.class, null);
+            transaction.addToBackStack("name");
             transaction.commit();
         }
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem logToggle = menu.findItem(R.id.menu_toggle_log);
-        logToggle.setVisible(findViewById(R.id.sample_output) instanceof ViewAnimator);
-        logToggle.setTitle(mLogShown ? R.string.sample_hide_log : R.string.sample_show_log);
-
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_toggle_log:
-                mLogShown = !mLogShown;
-                ViewAnimator output = findViewById(R.id.sample_output);
-                if (mLogShown) {
-                    output.setDisplayedChild(1);
-                } else {
-                    output.setDisplayedChild(0);
-                }
-                invalidateOptionsMenu();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * Create a chain of targets that will receive log data
-     */
-    @Override
-    public void initializeLogging() {
-        Log.i(TAG, "Ready");
-    }
+//
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.main, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+//        MenuItem logToggle = menu.findItem(R.id.menu_toggle_log);
+//        logToggle.setVisible(findViewById(R.id.sample_output) instanceof ViewAnimator);
+//        logToggle.setTitle(mLogShown ? R.string.sample_hide_log : R.string.sample_show_log);
+//
+//        return super.onPrepareOptionsMenu(menu);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.menu_toggle_log:
+//                mLogShown = !mLogShown;
+//                ViewAnimator output = findViewById(R.id.sample_output);
+//                if (mLogShown) {
+//                    output.setDisplayedChild(1);
+//                } else {
+//                    output.setDisplayedChild(0);
+//                }
+//                invalidateOptionsMenu();
+//                return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
+//
+//    /**
+//     * Create a chain of targets that will receive log data
+//     */
+//    @Override
+//    public void initializeLogging() {
+//        Log.i(TAG, "Ready");
+//    }
 }
